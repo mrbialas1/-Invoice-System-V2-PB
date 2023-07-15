@@ -54,7 +54,8 @@ class InvoiceControllerStepwiseTest extends Specification {
         def invoiceAsJson = jsonService.toJson(originalInvoice)
 
         when:
-        def invoiceId = mockMvc.perform(
+        invoiceId = Integer.valueOf(
+                mockMvc.perform(
                 post("/invoices")
                         .content(invoiceAsJson)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,14 +65,14 @@ class InvoiceControllerStepwiseTest extends Specification {
                 .andReturn()
                 .response
                 .contentAsString
+        )
 
         then:
-        invoiceId != null
+        invoiceId > 0
     }
 
     def "one invoice is returned when getting all invoices"() {
         given:
-        invoiceId = 1
         def expectedInvoice = originalInvoice
         expectedInvoice.id = invoiceId
 
@@ -95,7 +96,7 @@ class InvoiceControllerStepwiseTest extends Specification {
         expectedInvoice.id = invoiceId
 
         when:
-        def response = mockMvc.perform(get("/invoices/1"))
+        def response = mockMvc.perform(get("/invoices/$invoiceId"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
@@ -116,7 +117,7 @@ class InvoiceControllerStepwiseTest extends Specification {
 
         expect:
         mockMvc.perform(
-                put("/invoices/1")
+                put("/invoices/$invoiceId")
                         .content(invoiceAsJson)
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -127,11 +128,11 @@ class InvoiceControllerStepwiseTest extends Specification {
     def "updated invoice is returned correctly when getting by id"() {
         given:
         def expectedInvoice = originalInvoice
-        expectedInvoice.id = 1
+        expectedInvoice.id = invoiceId
         expectedInvoice.date = updatedDate
 
         when:
-        def response = mockMvc.perform(get("/invoices/1"))
+        def response = mockMvc.perform(get("/invoices/$invoiceId"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
@@ -145,15 +146,15 @@ class InvoiceControllerStepwiseTest extends Specification {
 
     def "invoice can be deleted"() {
         expect:
-        mockMvc.perform(delete("/invoices/1"))
+        mockMvc.perform(delete("/invoices/$invoiceId"))
                 .andExpect(status().isNoContent())
 
         and:
-        mockMvc.perform(delete("/invoices/1"))
+        mockMvc.perform(delete("/invoices/$invoiceId"))
                 .andExpect(status().isNotFound())
 
         and:
-        mockMvc.perform(get("/invoices/1"))
+        mockMvc.perform(get("/invoices/$invoiceId"))
                 .andExpect(status().isNotFound())
     }
 }

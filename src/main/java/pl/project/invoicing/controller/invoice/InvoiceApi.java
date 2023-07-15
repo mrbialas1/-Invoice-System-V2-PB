@@ -1,4 +1,4 @@
-package pl.project.invoicing.controller;
+package pl.project.invoicing.controller.invoice;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

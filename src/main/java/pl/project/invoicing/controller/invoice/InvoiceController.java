@@ -1,4 +1,4 @@
-package pl.project.invoicing.controller;
+package pl.project.invoicing.controller.invoice;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
